@@ -58,3 +58,32 @@
 ### 加密使用
 
 对于类似`.ssh/id_rsa`或者`.git-credentials`文件可以通过`yadm`自带的`encrypt`工具进行加密，使用步骤如下
+
+1. 在`.config/yadm/encrypt`文件内写入需要加密的文件，支持模式匹配
+
+2. 假设在`.ssh/`目录下所有文件(例如`config, id_rsa`)都需要进行加密，则在配置了`.config/yadm/encrypt`内容后输入以下指令(安装openssl为前提)
+
+   ```shell
+   yadm encrypt
+   ```
+
+   则会要求输入一个密码来进行加密
+
+3. 加密完则会在`.local/share/yadm`目录下产生一个`archive`作为加密打包后的文件，将该文件添加并上传到`Github`
+   > 虽然加密文件本身有一定安全性，但为了保险起见还是推荐使用`Private`仓库来存储自己的`Dotfiles`
+
+   ```shell
+   yadm add ~/.local/share/yadm/archive
+   yadm commit -m "add encrypt archive"
+   yadm push
+   ```
+
+   原本的文件此时将会依旧本地存在于(例如`config, id_rsa`)，但不需要上传到`Github`当中
+
+4. 在下次重装系统/更换环境的时候，如果需要通过`yadm`对环境进行复原并解密加密文件，则只需要输入以下指令
+
+   ```shell
+   yadm decrypt
+   ```
+
+   就会将加密打包的文件解密到对应的文件目录，保证一定的安全性
