@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Because Git submodule commands cannot operate without a work tree, they must
+# be run from within $HOME (assuming this is the root of your dotfiles)
+cd "$HOME" || exit
+
+# if use apt for package manager, install zsh by apt
+if [ -f /etc/debian_version ]; then
+    sudo apt-get install zsh vim tmux curl wget openssl -y
+fi
+# if use yum for package manager, install zsh by yum
+if [ -f /etc/redhat-release ]; then
+    sudo yum install zsh vim tmux curl wget openssl -y
+fi
+# if use pacman for package manager, install zsh by pacman
+if [ -f /etc/arch-release ]; then
+    sudo pacman -S zsh vim tmux openssl curl wget --noconfirm
+fi
+
+echo "Init submodules"
+yadm submodule update --depth 1 --recursive --init
+
+# if $SHELL not zsh , change to zsh
+if [ "$SHELL" != "/bin/zsh" ]; then
+    chsh -s /bin/zsh
+fi
+
+# Tips for switching oh my Zsh
+echo -e "\e[1;31m"Run zsh to apply the configuration\!"\e[0m"

@@ -1,0 +1,11 @@
+[credential]
+	helper = store
+[core]
+	excludesFile = ~/.gitignore
+	editor = vim
+[merge]
+	tool = vimdiff
+[alias]
+	graph = log --all --graph --decorate --oneline
+[init]
+	defaultBranch = main
