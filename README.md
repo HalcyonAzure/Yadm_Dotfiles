@@ -6,7 +6,7 @@
 
 1. 先在自己当前环境下安装`yadm`，具体安装说明参照[Installation](https://yadm.io/docs/install)
 
-2. 通过`Fork`或者下载源码的方式，创建并上传到自己的一个仓库中，最好是`Private`类型
+2. 通过`Use this template`或者下载源码的方式，创建并上传到自己的一个仓库中，最好是`Private`类型
 
 3. 在本身没有经过配置`Dotfiles`的环境下（或提前备份好自己的`Dotfiles`）输入以下指令拉取模板到本地进行管理
 
