@@ -59,9 +59,9 @@
 
 对于类似`.ssh/id_rsa`或者`.git-credentials`文件可以通过`yadm`自带的`encrypt`工具进行加密，使用步骤如下
 
-1. 在`.config/yadm/encrypt`文件内写入需要加密的文件，支持模式匹配
+1. 在`.config/yadm/encrypt`文件内写入需要加密的文件路径，支持正则匹配
 
-2. 假设在`.ssh/`目录下所有文件(例如`config, id_rsa`)都需要进行加密，则在配置了`.config/yadm/encrypt`内容后输入以下指令(安装openssl为前提)
+2. 假设在`.ssh/`目录下所有文件(例如`config, id_rsa`)都需要进行加密，则在`.config/yadm/encrypt`写入`.ssh/*`后输入以下指令(安装openssl为前提)
 
    ```shell
    yadm encrypt
