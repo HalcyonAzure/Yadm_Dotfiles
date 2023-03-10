@@ -1,29 +1,136 @@
-#!/bin/sh
+#!/bin/bash
 
-# Because Git submodule commands cannot operate without a work tree, they must
-# be run from within $HOME (assuming this is the root of your dotfiles)
-cd "$HOME" || exit
+log() {
+  echo -e "\033[32m[INFO]\033[0m $1"
+}
 
-# if use apt for package manager, install zsh by apt
-if [ -f /etc/debian_version ]; then
-    sudo apt-get install zsh vim tmux curl wget openssl -y
-fi
-# if use yum for package manager, install zsh by yum
-if [ -f /etc/redhat-release ]; then
-    sudo yum install zsh vim tmux curl wget openssl -y
-fi
-# if use pacman for package manager, install zsh by pacman
-if [ -f /etc/arch-release ]; then
-    sudo pacman -S zsh vim tmux openssl curl wget --noconfirm
+# 定义红色错误日志输出函数
+error() {
+  echo -e "\033[31m[ERROR]\033[0m $1"
+}
+
+# 检查当前用户是否有sudo权限
+if ! sudo -v &> /dev/null; then
+  error "Please run the script as a user with sudo privileges"
+  exit 1
 fi
 
-echo "Init submodules"
-yadm submodule update --depth 1 --recursive --init
+# 定义函数用于询问是否需要替换镜像源，如果需要则替换
+replace_mirror() {
+  read -rp "Use USTC mirror as default for APT? [y/N]: " answer
+  case $answer in
+    [yY])
+      log "Replacing the default mirror with USTC mirror..."
+      sudo sed -i 's/http:\/\/archive.ubuntu.com/http:\/\/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+      sudo apt update
+      log "Mirror replacement completed."
+      ;;
+    *)
+      log "Keeping the default mirror."
+      ;;
+  esac
+}
 
-# if $SHELL not zsh , change to zsh
-if [ "$SHELL" != "/bin/zsh" ]; then
-    chsh -s /bin/zsh
+# 定义函数用于安装apt软件
+install_packages() {
+  log "Installing common components..."
+  sudo apt install -y zsh tldr vim tmux curl wget openssl build-essential gdb python3 python3-pip # 这里可以添加其他需要安装的软件包
+  log "Package installation completed."
+}
+
+# 定义函数用于配置代理环境变量
+configure_proxy() {
+  read -rp "Do you want to configure proxy environment variables? [y/N]: " answer
+  case $answer in
+    [yY])
+      read -rp "Enter your proxy server URL: " proxy_url
+      read -rp "Enter your proxy server port: " proxy_port
+      # 设置ALL_PROXY环境变量，使得所有支持代理的应用程序都使用该代理服务器
+      export ALL_PROXY="http://$proxy_url:$proxy_port"
+      # 设置其他常见代理环境变量
+      export http_proxy="$ALL_PROXY"
+      export https_proxy="$ALL_PROXY"
+      export ftp_proxy="$ALL_PROXY"
+      log "Proxy environment variables configured."
+      ;;
+    *)
+      log "Skipping proxy configuration."
+      ;;
+  esac
+}
+
+# 定义函数用于初始化yadm的子模块
+init_submodules() {
+  log "Initializing yadm submodules..."
+  yadm submodule update --depth 1 --recursive --init
+  log "yadm submodule initialization completed."
+}
+
+# 定义函数用于配置git全局用户名和邮箱
+config_git() {
+  read -rp "Do you want to configure git global username and email? [y/N]: " answer
+  case $answer in
+    [yY])
+      read -rp "Enter your git username: " username
+      read -rp "Enter your git email: " email
+      git config --global user.name "$username"
+      git config --global user.email "$email"
+      log "Git global configuration completed."
+      ;;
+    *)
+      log "Skipping git global configuration."
+      ;;
+  esac
+}
+
+# 定义函数用于解密加密文件
+decrypt_files() {
+  read -rp "Do you want to decrypt encrypted files using yadm? [y/N]: " answer
+  case $answer in
+    [yY])
+      yadm decrypt # 这里可以添加其他需要解密的文件路径
+      log "File decryption completed."
+      ;;
+    *)
+      log "Skipping file decryption."
+      ;;
+  esac
+}
+
+# 主程序开始
+
+# 询问是否要替换镜像源
+replace_mirror
+
+# 安装软件
+install_packages
+
+# 配置临时代理环境变量
+configure_proxy
+
+# 初始化yadm子模块以配置oh-my-zsh和zsh对应插件
+init_submodules
+
+# 配置git全局用户名和邮箱
+config_git
+
+# 解密加密文件
+decrypt_files
+
+log "Bootstrap script completed."
+
+# 更改默认shell为zsh
+if [ "$SHELL" = "/bin/zsh" ]; then
+  log "Zsh is already the default shell."
+else
+  log "Changing the shell to zsh."
+  if chsh -s $(which zsh); then
+    # 输出绿色信息表示成功更改默认shell
+    log "Default shell changed to zsh."
+    # 重新启动shell以使更改生效
+    exec zsh
+  else
+    # 输出红色信息表示更改默认shell失败
+    error "Failed to change default shell. Please try again later."
+  fi
 fi
-
-# Tips for switching oh my Zsh
-echo -e "\e[1;31m"Run zsh to apply the configuration\!"\e[0m"

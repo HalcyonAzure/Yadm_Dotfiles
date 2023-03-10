@@ -13,3 +13,6 @@
 [submodule ".oh-my-custom/plugins/zsh-proxy"]
 	path = .oh-my-custom/plugins/zsh-proxy
 	url = https://github.com/sukkaw/zsh-proxy.git
+[submodule ".oh-my-custom/plugins/zsh-autocomplete"]
+	path = .oh-my-custom/plugins/zsh-autocomplete
+	url = https://github.com/marlonrichert/zsh-autocomplete

@@ -24,9 +24,34 @@
 
 在`clone`仓库的时候如果附带了`bootstrap`将会自动执行以下三件事
 
-* 在以 `apt/yum/pacman` 作为包管理器的情况下安装`zsh vim tmux curl wget openssl`
-* 安装 `oh-my-zsh`，并以`p10k`为主题。安装`zsh-autosuggestions`,`zsh-syntax-highlighting`和`zsh-proxy`三个插件
+* 安装以下应用
+   * `zsh`: 作为默认终端
+   * `tldr`: 用于快速查看命令的使用方法
+   * `vim`: 作为默认编辑器
+   * `tmux`: 用于多窗口管理
+   * `curl, wget`: 用于网络请求
+   * `openssl`: 用于加密
+   * `build-essential, gdb`: 用于编译
+   * `python3, python3-pip`: 用于python开发
+
 * 切换 `zsh` 为当前用户的默认终端
+
+* 安装 `oh-my-zsh`，以`p10k`为主题，并启用了以下插件：
+
+   * `direnv`: 用于自动加载`.envrc`文件
+   * `z`: 用于快速跳转到指定目录
+   * `git`: 用于显示当前git仓库的状态
+   * `tmux`: 用于在tmux中显示当前会话的状态
+   * `sudo`: 用于在命令前自动添加sudo
+   * `colorize`: 用于显示颜色
+   * `extract`: 用于解压缩文件
+   * `docker`: 用于docker的指令缩写
+   * `docker-compose`: 用于docker-compose的指令缩写
+   * `command-not-found`: 用于提示未安装的命令
+   * `zsh-proxy`: 用于代理设置
+   * `zsh-autosuggestions`: 用于补全历史命令
+   * `zsh-autocomplete`: 用于提示命令
+   * `zsh-syntax-highlighting`: 用于高亮命令
 
 ### 配置文件
 
@@ -39,7 +64,6 @@
 * 配置了`rust`国内镜像
 * 添加了[transfer](https://transfer.sh/)用于分享文件
 * 使用`pws`作为`powershell.exe`的`alias`，便于`wsl`环境下使用`powershell`
-* 启用了`vi`的normal模式，在输入命令的时候按`Esc`即可
 
 #### .vimrc
 
