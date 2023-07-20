@@ -34,7 +34,8 @@ replace_mirror() {
 # 定义函数用于安装apt软件
 install_packages() {
   log "Installing common components..."
-  sudo apt install -y zsh tldr vim tmux curl wget openssl build-essential gdb python3 python3-pip # 这里可以添加其他需要安装的软件包
+  sudo apt install -y zsh tldr vim tmux curl wget openssl \
+        build-essential gdb python3 python3-pip zsh-antigen # 这里可以添加其他需要安装的软件包
   log "Package installation completed."
 }
 
@@ -57,13 +58,6 @@ configure_proxy() {
       log "Skipping proxy configuration."
       ;;
   esac
-}
-
-# 定义函数用于初始化yadm的子模块
-init_submodules() {
-  log "Initializing yadm submodules..."
-  yadm submodule update --depth 1 --recursive --init
-  log "yadm submodule initialization completed."
 }
 
 # 定义函数用于配置git全局用户名和邮箱
@@ -108,9 +102,6 @@ install_packages
 # 配置临时代理环境变量
 configure_proxy
 
-# 初始化yadm子模块以配置oh-my-zsh和zsh对应插件
-init_submodules
-
 # 配置git全局用户名和邮箱
 config_git
 
@@ -128,7 +119,7 @@ else
     # 输出绿色信息表示成功更改默认shell
     log "Default shell changed to zsh."
     # 重新启动shell以使更改生效
-    exec zsh
+    exec -l $SHELL
   else
     # 输出红色信息表示更改默认shell失败
     error "Failed to change default shell. Please try again later."
